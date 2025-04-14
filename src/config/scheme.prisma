@@ -1,0 +1,32 @@
+// schema.prisma
+
+datasource db {
+  provider = "mysql"
+  url      = env("EVENTARRY_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  userId     String   @id @db.VarChar(8) // Primary key with a maximum length of 8 characters
+  fullName   String   @db.VarChar(50) // Full name with a maximum length of 50 characters
+  shortName  String   @db.VarChar(50) // Short name with a maximum length of 50 characters
+  password   String   @db.VarChar(255) // Password with a maximum length of 255 characters
+  branchCode String   @db.VarChar(8) // Branch code with a maximum length of 8 characters
+  levelId    String   @db.VarChar(3) // Level ID with a maximum length of 3 characters
+  createdAt  DateTime @default(now()) // Created at timestamp, optional
+  updatedAt  DateTime @updatedAt // Updated at timestamp, automatically updated
+}
+
+model InvitationCode {
+  code        String    @id @db.VarChar(36) // Primary key with a maximum length of 36 characters
+  userId      String    @db.VarChar(8) // User ID with a maximum length of 8 characters
+  name        String?   @db.VarChar(255) // Name, optional field
+  level       String?   @db.VarChar(255) // Level, optional field
+  phoneNumber String?   @db.VarChar(255) // Phone number, optional field
+  status      String?   @db.VarChar(255) // Status, optional field
+  pax         String?   @db.VarChar(255) // Pax, optional field
+  createdAt   DateTime? @default(now()) // Created at timestamp, optional
+}
