@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createNewUserClient, generateToken, getUserDetailClient } from '../client/user.client';
+import { createNewUserClient, generateToken, getAllUserClient, getUserDetailClient } from '../client/user.client';
 import { passwordCompare, passwordHash } from '../utils';
 import { LoginRequestScheme } from '../validation/user.validate';
 import { LoginRequest, LoginResponse, User } from '../types/user.types';
@@ -68,6 +68,47 @@ export async function login(req: Request, res: Response) {
             data,
         })
        
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            message: error
+        })
+    }
+}
+
+export async function getUserDetail(req: Request, res: Response) {
+    try {
+        const userId = req.params.id
+        const { user, err } = await getUserDetailClient(userId)
+        if (err) {
+            return res.status(500).json({
+                message: err.message
+            })
+        }
+        return res.status(200).json({
+            message: "Get user detail successful",
+            data: user
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            message: error
+        })
+    }
+}
+
+export async function getAllUser(req: Request, res: Response) {
+    try {
+        const { users, err } = await getAllUserClient()
+        if (err) {
+            return res.status(500).json({
+                message: err.message
+            })
+        }
+        return res.status(200).json({
+            message: "Get all user successful",
+            data: users
+        })
     } catch (error) {
         console.error(error)
         return res.status(500).json({
