@@ -1,34 +1,34 @@
-# Stage 1: Build Stage
-FROM oven/bun:1.1.27-alpine as builder
+# Stage 1: Build with Bun
+FROM oven/bun:1.1.27-alpine AS builder
 
 WORKDIR /app
 
-# Copy only files needed for installing dependencies
+# Install dependencies using Bun
 COPY package.json bun.lock ./
-
-# Install dependencies
 RUN bun install
 
-# Copy Prisma schema and source files
-COPY src/config/scheme.prisma ./prisma
+# Copy remaining app files
 COPY . .
 
-# Generate Prisma Client
+# Generate Prisma client
 RUN bunx prisma generate
 
-# Stage 2: Production Image
-FROM oven/bun:1.1.27-alpine
+# Compile TypeScript to JavaScript
+RUN bun run build
+
+# Stage 2: Production runtime with Node.js
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# Copy app and generated prisma client from builder
+# Copy compiled output and dependencies from build stage
 COPY --from=builder /app /app
 
-# Set environment variable for production
-ENV NODE_ENV=production
+# Only install production dependencies
+RUN npm install --omit=dev
 
-# Expose your app's port
-EXPOSE 8001
+# Expose the port your server listens on
+EXPOSE 8003
 
-# Start the server
-CMD ["bun", "run", "start"]
+# Run the compiled JS server
+CMD ["node", "dist/index.js"]
