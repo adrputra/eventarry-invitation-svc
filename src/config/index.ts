@@ -1,5 +1,7 @@
 import { initPrismaConfig } from "./prisma.config";
 
 export function initConfig() {
-    initPrismaConfig()
+    const prismaConfig = initPrismaConfig()
+    console.log(prismaConfig)
+    console.log(process.env.EVENTARRY_DATABASE_URL)
 }
