@@ -13,8 +13,8 @@ async function main() {
     
     app.use(cors());
     app.use(express.json());
-    // app.use(decryptMiddleware)
-    // app.use(encryptMiddleware)
+    
+    console.log(process.env.DATABASE_URL)
     
     initRouter(app)
 
