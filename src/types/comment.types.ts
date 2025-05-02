@@ -5,3 +5,8 @@ export interface Comment {
     comment: string;
     createdAt: Date | null;
 }
+
+export interface CommentResponse {
+    comments: Comment[];
+    isMore: boolean;
+}

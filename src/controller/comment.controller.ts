@@ -31,7 +31,27 @@ export async function addComment(req: Request, res: Response) {
 export async function getComment(req: Request, res: Response) {
     try {
         const id = req.params.id
-        const { comments, err } = await getCommentClient(id)
+        const offset = req.query.offset ? parseInt(req.query.offset as string) : 0
+        const limit = req.query.limit ? parseInt(req.query.limit as string) : 10
+        
+        if (!id) {
+            return res.status(400).json({
+                message: "Event id is required"
+            })
+        }
+
+        if (isNaN(offset) || isNaN(limit)) {
+            return res.status(400).json({
+                message: "Offset and limit must be numbers"
+            })
+        }
+        if (offset < 0 || limit < 0) {
+            return res.status(400).json({
+                message: "Offset and limit must be greater than or equal to 0"
+            })
+        }
+
+        const { comments, err } = await getCommentClient(id, offset, limit)
         if (err) {
             return res.status(500).json({
                 message: err.message

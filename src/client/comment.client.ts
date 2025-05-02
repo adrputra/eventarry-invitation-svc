@@ -1,5 +1,5 @@
 import { prisma } from "../connection"
-import { Comment } from "../types/comment.types"
+import { Comment, CommentResponse } from "../types/comment.types"
 
 export async function addCommentClient(comment: Comment): Promise<Error | null> {
     try {
@@ -18,17 +18,26 @@ export async function addCommentClient(comment: Comment): Promise<Error | null> 
     return null
 }
 
-export async function getCommentClient(id: string): Promise<{ comments: Comment[] | null; err: Error | null }> {
+export async function getCommentClient(id: string, offset: number, limit: number): Promise<{ comments: CommentResponse | null; err: Error | null }> {
     try {
-        const comments = await prisma.comments.findMany({
-            where: {
-                eventId: id
-            }
-        })
-        return { comments, err: null }
-    }
-    catch (error) {
-        console.error(error)
-        return { comments: null, err: error as Error }
-    }
+        const results = await prisma.comments.findMany({
+          where: { eventId: id },
+        //   skip: offset,
+          take: limit + 1, // Fetch one more than needed
+          orderBy: { createdAt: "asc" },
+        });
+    
+        const hasMore = results.length > limit;
+        const result = results.slice(0, limit);
+
+        const comments: CommentResponse = {
+            comments: result,
+            isMore: hasMore,
+        };
+    
+        return { comments, err: null };
+      } catch (error) {
+        console.error(error);
+        return { comments: null, err: error as Error };
+      }
 }

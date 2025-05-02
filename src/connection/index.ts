@@ -11,7 +11,10 @@ export async function initConnection() {
 }
 
 async function initDatabaseConnection() {
-    prisma = new PrismaClient();
+    prisma = new PrismaClient({
+        log: ['query', 'info', 'warn', 'error'], // Enable logging for debugging
+        errorFormat: 'pretty', // Use pretty error format for better readability
+    });
     try {
         await prisma.$connect(); // Establish the connection
         console.log('Connected to the database');
