@@ -50,7 +50,6 @@ jobs:
           
           # Run the new container
           docker run -d --name ${{ secrets.NAME }} --memory 512m \
-          --env-file ${{ secrets.SECRET_SERVICE }}/.env \
           --memory-reservation 256m \
           --network main \
           --restart unless-stopped \
