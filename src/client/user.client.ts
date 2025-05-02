@@ -48,3 +48,13 @@ export function generateToken(user: User): string {
     );
     return token;
 }
+
+export async function getAllUserClient(): Promise<{ users: User[] | null; err: Error | null }> {
+    try {
+        const users: User[] = await prisma.user.findMany()
+        return { users, err: null }
+    } catch (error) {
+        console.error(error)
+        return { users: null, err: error as Error }
+    }
+}

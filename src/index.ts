@@ -2,7 +2,7 @@ import { initConfig } from "./config";
 import express from 'express';
 import { disconnect, initConnection } from "./connection";
 import { initRouter } from "./route";
-import { decryptMiddleware, encryptMiddleware } from "./middleware";
+import cors from 'cors';
 
 async function main() {
     initConfig()
@@ -10,9 +10,11 @@ async function main() {
 
     const app = express();
     const PORT = process.env.PORT || 3000;
+    
+    app.use(cors());
     app.use(express.json());
-    app.use(decryptMiddleware)
-    app.use(encryptMiddleware)
+    // app.use(decryptMiddleware)
+    // app.use(encryptMiddleware)
     
     initRouter(app)
 
