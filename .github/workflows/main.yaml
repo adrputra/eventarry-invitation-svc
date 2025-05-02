@@ -4,6 +4,9 @@ on:
     branches:
       - main
 
+env:
+  DATABASE_URL: 'mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,8 +44,6 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         key: ${{ secrets.KEY }}
         script: |
-          DATABASE_URL="mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}"
-
           # Stop and remove the existing container (if any)
           docker stop ${{ secrets.NAME }} || true
           docker rm ${{ secrets.NAME }} || true
