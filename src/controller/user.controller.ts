@@ -18,6 +18,7 @@ export async function createNewUser(req: Request, res: Response) {
         }
         const err = await createNewUserClient(userData)
         if (err) {
+            console.error(err)
             return res.status(500).json({
                 message: err.message
             })
@@ -26,8 +27,9 @@ export async function createNewUser(req: Request, res: Response) {
             message: "User created successfully"
         })
     } catch (error) {
+        console.log("ERR", error)
         return res.status(500).json({
-            message: error
+            message: error as Error 
         })
     }
 }
