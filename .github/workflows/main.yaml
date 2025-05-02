@@ -61,7 +61,6 @@ jobs:
           -p 8004:8004 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.NAME }}:latest
 
       env:
-        PORT: 8004
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
