@@ -36,7 +36,7 @@ jobs:
     - name: Deploy on Server
       uses: appleboy/ssh-action@v0.1.8
       env:
-        DATABASE_URL="mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}"
+        DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
