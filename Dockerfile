@@ -10,7 +10,7 @@ COPY package.json bun.lockb ./
 RUN bun install
 
 # Copy Prisma schema and source files
-COPY prisma ./prisma
+COPY src/config/scheme.prisma ./prisma
 COPY . .
 
 # Generate Prisma Client
