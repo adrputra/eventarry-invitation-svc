@@ -47,25 +47,18 @@ jobs:
           
           # Pull the latest image
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.NAME }}:latest
+
+          # Build the connection string
+          DATABASE_URL="mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}"
           
           # Run the new container
           docker run -d --name ${{ secrets.NAME }} --memory 512m \
           --memory-reservation 256m \
           --network main \
           --restart unless-stopped \
-          -e PORT=8004 \
-          -e EVENTARRY_DATABASE_URL="mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" \
+          -e PORT=${{ secrets.PORT }} \
+          -e EVENTARRY_DATABASE_URL="$DATABASE_URL" \
           -e EVENTARRY_REDIS_HOST=${{ secrets.REDIS_HOST }} \
           -e EVENTARRY_REDIS_PORT=${{ secrets.REDIS_PORT }} \
           -e EVENTARRY_JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          -p 8004:8004 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.NAME }}:latest
-
-      env:
-        DATABASE_USER: ${{ secrets.DATABASE_USER }}
-        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
-        DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
-        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-        REDIS_HOST: ${{ secrets.REDIS_HOST }}
-        REDIS_PORT: ${{ secrets.REDIS_PORT }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          -p ${{ secrets.PORT }}:${{ secrets.PORT }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.NAME }}:latest
