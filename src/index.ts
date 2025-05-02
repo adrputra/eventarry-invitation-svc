@@ -14,7 +14,7 @@ async function main() {
     app.use(cors());
     app.use(express.json());
     
-    console.log(process.env.DATABASE_URL)
+    console.log(process.env.EVENTARRY_DATABASE_URL)
     
     initRouter(app)
 
