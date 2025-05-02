@@ -53,15 +53,15 @@ jobs:
           --memory-reservation 256m \
           --network main \
           --restart unless-stopped \
-          -e PORT=8003 \
+          -e PORT=8004 \
           -e EVENTARRY_DATABASE_URL="mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" \
           -e EVENTARRY_REDIS_HOST=${{ secrets.REDIS_HOST }} \
           -e EVENTARRY_REDIS_PORT=${{ secrets.REDIS_PORT }} \
           -e EVENTARRY_JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          -p 8003:8003 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.NAME }}:latest
+          -p 8004:8004 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.NAME }}:latest
 
       env:
-        PORT: 8003
+        PORT: 8004
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         DATABASE_HOST: ${{ secrets.DATABASE_HOST }}

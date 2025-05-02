@@ -28,7 +28,7 @@ COPY --from=builder /app /app
 RUN npm install --omit=dev
 
 # Expose the port your server listens on
-EXPOSE 8003
+EXPOSE 8004
 
 # Run the compiled JS server
 CMD ["node", "dist/index.js"]
