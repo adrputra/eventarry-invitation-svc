@@ -35,14 +35,14 @@ jobs:
       # SSH into server and deploy
     - name: Deploy on Server
       uses: appleboy/ssh-action@v0.1.8
-      env:
-        DATABASE_URL=mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         passphrase: ${{ secrets.PASSPHRASE }}
         key: ${{ secrets.KEY }}
         script: |
+          DATABASE_URL="mysql://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}"
+
           # Stop and remove the existing container (if any)
           docker stop ${{ secrets.NAME }} || true
           docker rm ${{ secrets.NAME }} || true
@@ -56,7 +56,7 @@ jobs:
           --network main \
           --restart unless-stopped \
           -e PORT=${{ secrets.PORT }} \
-          -e EVENTARRY_DATABASE_URL="$DATABASE_URL" \
+          -e EVENTARRY_DATABASE_URL=$DATABASE_URL \
           -e EVENTARRY_REDIS_HOST=${{ secrets.REDIS_HOST }} \
           -e EVENTARRY_REDIS_PORT=${{ secrets.REDIS_PORT }} \
           -e EVENTARRY_JWT_SECRET=${{ secrets.JWT_SECRET }} \
