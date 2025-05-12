@@ -4,6 +4,9 @@ import { Parameter } from "../types/param.types";
 export async function getParamClient(key: string): Promise<{ params: Parameter | null; err: Error | null }> {
     try {
         const params = await prisma.parameters.findFirst({
+            where: {
+                key
+            },
             select: {
                 key: true,
                 value: true,
