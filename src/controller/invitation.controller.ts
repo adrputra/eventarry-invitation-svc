@@ -69,7 +69,7 @@ export async function sendWhatsappMessage(req: Request, res: Response) {
 
             // Step 2: Prepare payload for RabbitMQ
             const payload = {
-                phone: formatPhoneNumber(phoneNumber),
+                phone: `${formatPhoneNumber(phoneNumber)}@c.us`,
                 message: whatsappMessage.value.replace(/{{name}}/g, name || ' ').replace(/{{url}}/g, `${url.value}/${code}`)
             };
 
