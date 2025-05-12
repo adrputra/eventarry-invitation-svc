@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { UpdateRequest } from "../types/general.types";
 
 export function passwordHash(password: string) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -8,6 +9,41 @@ export function passwordHash(password: string) {
 export function passwordCompare(password: string, hash: string) {
     return bcrypt.compareSync(password, hash);
 }
+
+export function formatPhoneNumber(phone: string): string {
+    // Remove all non-digit characters
+    phone = phone.replace(/\D/g, '');
+    if (phone.startsWith('0')) {
+        return '62' + phone.slice(1);
+    }
+    if (phone.startsWith('62')) {
+        return phone;
+    }
+    return '62' + phone;
+}
+
+
+export function dynamicUpdate(request: UpdateRequest): { [key: string]: any } | Error {
+    try {
+        const { filter, joinType = 'AND' } = request;
+
+        const conditions = filter.map((f) => {
+            if (f.operator === '=') {
+                return { [f.key]: f.value };
+            } else {
+                throw new Error(`Unsupported operator: ${f.operator}`);
+            }
+        });
+
+        const where = joinType === 'OR' ? { OR: conditions } : Object.assign({}, ...conditions);
+
+        return where;
+    } catch (error) {
+        console.error('Dynamic update error:', error);
+        return error as Error;
+    }
+}
+
 
 // const key = crypto.createHash('sha256').update(process.env.EVENTARRY_ENCRYPTION_KEY as string).digest();
 

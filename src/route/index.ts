@@ -1,6 +1,7 @@
 import { Router, Express } from "express";
 import { initUserRoutes } from "./user.route";
 import { initPublicRoutes } from "./public.route";
+import { initInvitationRoutes } from "./invitation.route";
 
 export function initRouter(app:Express) {
 
@@ -12,4 +13,5 @@ export function initRouter(app:Express) {
 
     initPublicRoutes(publicRouter);
     initUserRoutes(privateRouter);
+    initInvitationRoutes(privateRouter);
 }

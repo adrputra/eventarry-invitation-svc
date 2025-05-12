@@ -38,9 +38,15 @@ model SessionAuth {
 }
 
 model Comments {
-  id        Int      @id @default(autoincrement()) // Primary key, auto-incrementing integer
-  userId    String   @db.VarChar(8) // User ID with a maximum length of 8 characters
-  eventId   String   @db.VarChar(36) // Event ID with a maximum length of 36 characters
-  comment   String   @db.VarChar(255) // Comment with a maximum length of 255 characters
-  createdAt DateTime? @default(now()) // Created at timestamp, optional
+  id        Int       @id @default(autoincrement())
+  userId    String    @db.VarChar(8)
+  eventId   String    @db.VarChar(36)
+  comment   String    @db.VarChar(255)
+  createdAt DateTime? @default(now())
+}
+
+model Parameters {
+  key         String  @id @db.VarChar(255)
+  value       String  @db.VarChar(255)
+  description String? @db.VarChar(255)
 }
