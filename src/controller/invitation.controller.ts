@@ -55,7 +55,7 @@ export async function sendWhatsappMessage(req: Request, res: Response) {
         };
 
         const data = {
-            status: 'Sent',
+            status: 'Notified',
         };
 
         // Start a Prisma transaction
