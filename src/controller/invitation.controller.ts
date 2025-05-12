@@ -31,6 +31,19 @@ export async function sendWhatsappMessage(req: Request, res: Response) {
             });
         }
 
+        const { params: url, err: urlErr } = await getParamClient(`${userId}-url`);
+        if (urlErr) {
+            return res.status(500).json({
+                message: urlErr.message
+            });
+        }
+
+        if (!url) {
+            return res.status(404).json({
+                message: 'URL not found in parameters'
+            });
+        }
+
         const filter: UpdateRequest = {
             filter: [
                 {
@@ -57,7 +70,7 @@ export async function sendWhatsappMessage(req: Request, res: Response) {
             // Step 2: Prepare payload for RabbitMQ
             const payload = {
                 phone: formatPhoneNumber(phoneNumber),
-                message: whatsappMessage.value.replace(/{{name}}/g, name || ' ')
+                message: whatsappMessage.value.replace(/{{name}}/g, name || ' ').replace(/{{url}}/g, `${url.value}/${code}`)
             };
 
             console.log('Publishing payload:', payload); // Log the payload before publishing
