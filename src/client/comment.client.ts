@@ -24,7 +24,7 @@ export async function getCommentClient(id: string, offset: number, limit: number
           where: { eventId: id },
         //   skip: offset,
           take: limit + 1, // Fetch one more than needed
-          orderBy: { createdAt: "asc" },
+          orderBy: { createdAt: "desc" },
         });
     
         const hasMore = results.length > limit;
