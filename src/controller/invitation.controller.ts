@@ -65,7 +65,7 @@ export async function sendWhatsappManual(req: Request, res: Response) {
             }
 
             const payload = {
-                phone: `${formatPhoneNumber(phoneNumber)}@c.us`,
+                phone: `${formatPhoneNumber(phoneNumber)}`,
                 message: whatsappMessage.value.replace(/{{name}}/g, name || ' ').replace(/{{url}}/g, `${url.value}/${code}`)
             };
 
