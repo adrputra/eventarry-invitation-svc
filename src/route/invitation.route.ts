@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { sendWhatsappMessage, sendWhatsappMessageBulk } from "../controller/invitation.controller";
+import { sendWhatsappManual, sendWhatsappMessage, sendWhatsappMessageBulk } from "../controller/invitation.controller";
 
 export function initInvitationRoutes(router: Router) {
     router.post('/invitation/sendMessage', (req, res) => {
@@ -8,5 +8,9 @@ export function initInvitationRoutes(router: Router) {
 
     router.post('/invitation/sendMessageBulk', (req, res) => {
         sendWhatsappMessageBulk(req, res);
+    });
+    
+    router.post('/invitation/manual', (req, res) => {
+        sendWhatsappManual(req, res);
     });
 }
