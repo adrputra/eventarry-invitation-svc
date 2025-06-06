@@ -6,6 +6,86 @@ import { formatPhoneNumber } from '../utils';
 import { prisma } from '../connection';
 import { UpdateFilter, UpdateRequest } from '../types/general.types';
 
+export async function sendWhatsappManual(req: Request, res: Response) {
+    try {
+        console.log('Incoming request:', req.body); // Log the request
+
+        const { name, phoneNumber, userId, code } = req.body;
+
+        if (!name || !phoneNumber || !userId) {
+            return res.status(400).json({
+                message: 'Name, phone number, and userId are required'
+            });
+        }
+
+        const { params: whatsappMessage, err: paramErr } = await getParamClient(`${userId}-wa-message`);
+        if (paramErr) {
+            return res.status(500).json({
+                message: paramErr.message
+            });
+        }
+
+        if (!whatsappMessage) {
+            return res.status(404).json({
+                message: 'No WhatsApp message found'
+            });
+        }
+
+        const { params: url, err: urlErr } = await getParamClient(`${userId}-url`);
+        if (urlErr) {
+            return res.status(500).json({
+                message: urlErr.message
+            });
+        }
+
+        if (!url) {
+            return res.status(404).json({
+                message: 'URL not found in parameters'
+            });
+        }
+
+        const filter: UpdateRequest = {
+            filter: [
+                {
+                    key: 'code',
+                    operator: '=',
+                    value: code
+                }
+            ]
+        };
+
+        const data = {
+            status: 'Notified',
+        };
+
+        await prisma.$transaction(async (tx) => {
+            const error = await updateInvitationClient(tx, filter, data);
+            if (error) {
+                throw new Error(error.message);
+            }
+
+            const payload = {
+                phone: `${formatPhoneNumber(phoneNumber)}`,
+                message: whatsappMessage.value.replace(/{{name}}/g, name || ' ').replace(/{{url}}/g, `${url.value}/${code}`)
+            };
+
+            const whatsappLink = `https://api.whatsapp.com/send/?phone=${payload.phone}&text=${encodeURIComponent(payload.message)}&type=phone_number&app_absent=0`
+        
+            return res.status(200).json({
+                message: 'WhatsApp message sent successfully',
+                data: whatsappLink
+            });
+        });
+
+    } catch (error) {
+        // Catch any error thrown in the transaction and respond
+        console.error('Error during transaction:', error);
+        return res.status(500).json({
+            message: error || 'An unexpected error occurred'
+        });
+    }
+}
+
 export async function sendWhatsappMessage(req: Request, res: Response) {
     try {
         console.log('Incoming request:', req.body); // Log the request
