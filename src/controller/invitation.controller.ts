@@ -155,3 +155,39 @@ export async function sendWhatsappMessageBulk(req: Request, res: Response) {
         });
     }
 }
+
+export async function confirmAttendance(req: Request, res: Response) {
+    try {
+        const { code } = req.body;
+        const filter: UpdateRequest = {
+            filter: [
+                {
+                    key: 'code',
+                    operator: '=',
+                    value: code
+                }
+            ]
+        };
+
+        const data = {
+            status: 'Attended',
+        };
+
+        await prisma.$transaction(async (tx) => {
+            const error = await updateInvitationClient(tx, filter, data);
+            if (error) {
+                throw new Error(error.message);
+            }
+        });
+
+        return res.status(200).json({
+            code: 200,
+            message: 'Attendance confirmed successfully'
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: error
+        });
+    }
+}
